@@ -1,0 +1,112 @@
+# Project Title
+Arcade Management System - DBMS Mini Project
+
+## Team Members
+*Team 25*
+- **Monisha** (SRN: PES2UG23CS387)
+- **Member 2** (SRN ending in 366 - *Please update*)
+- **Member 3** (SRN ending in 906 - *Please update*)
+- **Member 4** (SRN ending in 913 - *Please update*)
+
+*(Note: Please fill in the exact names and complete SRNs for the rest of your team members before submission).*
+
+## Brief Description of the Project
+This Arcade Management Web Application is a comprehensive system built using Spring Boot, Hibernate (JPA), Thymeleaf, and MySQL. It simulates a digital arcade environment where players can register, log in, browse game lists, manage inventories (items), join multiplayer sessions, and unlock achievements. The system dynamically updates player scores and automatically upgrades their rank thresholds (e.g., Bronze, Silver, Gold, Platinum). It actively enforces strong software engineering principles, including GRASP (Information Expert, Creator, Controller) and SOLID (SRP, OCP, LSP, DIP). User authentication and session handling are managed robustly via Spring Session JDBC.
+
+## Explanation of MVC Architecture
+The system strictly adheres to the Model-View-Controller (MVC) design pattern to maintain low coupling and high cohesion:
+- **Model (M):** Implemented using Spring Data JPA. It contains Entities (e.g., `Player`, `Game`, `Achievement`, `Item`, `Session`) that map directly to MySQL tables. Repositories (e.g., `PlayerRepository`) provide abstraction for database CRUD operations.
+- **View (V):** Implemented using **Thymeleaf templates** (HTML files located in `src/main/resources/templates`). The views map the data supplied by the controllers into dynamic web pages for the user (e.g., `/home/index.html`, `/players/login.html`).
+- **Controller (C):** Spring MVC Controllers (e.g., `PlayerController`, `GameController`). They parse incoming HTTP web requests, map DTOs, forward business logic execution to the abstract **Service Layer**, and return the appropriate HTML View template along with model attributes.
+
+## Database Design Details
+The database (`arcade_db`) consists of several interconnected relations simulating an arcade ecosystem:
+- **PLAYER:** Stores user credentials, total score, and a foreign key to `Rank` (`playerid`, `username`, `password`, `email`, `total_score`, `rank_id`).
+- **GAME:** Details of arcade games available (`gameid`, `title`, `genre`, `max_players`, `release_date`).
+- **ITEM / PLAYER_ITEM:** `Item` acts as a base catalog (name, rarity). `PlayerItem` acts as a bridge mapping ownership of items to specific players.
+- **RANKS:** Thresholds for player levels (`rankid`, `rank_name`, `rank_score`). E.g., Bronze (0), Silver (1000).
+- **ACHIEVEMENT / PLAYER_ACHIEVEMENT:** Global list of unlockables (`First Blood`, `Sharp Shooter`) and the tracking of which player unlocked which achievement.
+- **SESSION (MultiplayerSession / PlayerSession):** Tracks running game lobby sessions and which players participated in them.
+- **ADMIN:** Separate table isolating administrative users from standard players to obey Single Responsibility Principle.
+
+## Relevant Diagrams
+*(Include the provided diagram images below into your final submission document)*:
+- **Class Diagram:** `CLASS.jpeg`
+- **State Diagram:** `STATE_2.jpeg`
+- **Activity Diagram:** `ACTIVITY_2.jpeg`
+
+## Database Configuration Details (MySQL)
+Configured in `application.properties`:
+```properties
+server.port=8080
+spring.datasource.url=jdbc:mysql://localhost:3306/arcade_db?createDatabaseIfNotExist=true
+spring.datasource.username=root
+spring.datasource.password=password
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQLDialect
+
+spring.sql.init.mode=always
+spring.session.store-type=jdbc
+spring.session.jdbc.initialize-schema=always
+```
+
+## Complete Spring Boot Code Snippets
+*(For the actual submission, you can zip the `src/` folder. Below is the structural representation of the core architecture).*
+
+**1. Model / Entity (`Admin.java`)**
+```java
+package com.arcade.management.model;
+import jakarta.persistence.*;
+@Entity
+public class Admin {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String username;
+    private String password;
+}
+```
+
+**2. Repository (`AdminRepository.java`)**
+```java
+package com.arcade.management.repository;
+import com.arcade.management.model.Admin;
+import org.springframework.data.jpa.repository.JpaRepository;
+public interface AdminRepository extends JpaRepository<Admin, Long> {
+    Admin findByUsername(String username);
+}
+```
+
+**3. Controller**
+```java
+package com.arcade.management.controller;
+// Handles HTTP Requests and delegates to Service
+@Controller
+@RequestMapping("/players")
+public class PlayerController {
+    @Autowired
+    private PlayerService playerService; // Follows Dependency Inversion Principle
+    
+    @GetMapping("/login")
+    public String showLoginForm() {
+        return "players/login"; // Returns Thymeleaf View
+    }
+}
+```
+
+**4. Service implementation (Domain logic / Information Expert)**
+```java
+package com.arcade.management.service.impl;
+@Service
+public class PlayerServiceImpl implements PlayerService {
+    @Autowired private PlayerRepository playerRepository;
+    @Autowired private RankRepository rankRepository;
+    
+    public void checkAndUpdateRank(Player player) {
+        // Business logic to update rank based on score differences
+    }
+}
+```

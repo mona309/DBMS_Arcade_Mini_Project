@@ -13,6 +13,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class Admin implements Serializable {
     private static final long serialVersionUID = 1L;
+    private static Admin instance;
 
     @Id 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,4 +30,11 @@ public class Admin implements Serializable {
 
     @Column(nullable = false)
     private String role = "SUPER_ADMIN";
-}
+
+    // Singleton getInstance method
+    public static Admin getInstance() {
+        if (instance == null) {
+            instance = new Admin();
+        }
+        return instance;
+    }

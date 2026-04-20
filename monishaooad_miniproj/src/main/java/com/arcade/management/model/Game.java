@@ -4,10 +4,11 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import java.time.LocalDate;
 import java.util.List;
 
-@Entity @Table(name = "game") @Data @NoArgsConstructor @AllArgsConstructor
+@Entity @Table(name = "game") @Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class Game {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer gameID;

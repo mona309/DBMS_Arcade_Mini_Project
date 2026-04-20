@@ -4,10 +4,11 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Entity @Table(name = "multiplayersession") @Data @NoArgsConstructor @AllArgsConstructor
+@Entity @Table(name = "multiplayersession") @Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class MultiplayerSession {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer sessionID;
