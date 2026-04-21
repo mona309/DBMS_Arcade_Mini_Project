@@ -1,20 +1,33 @@
-package com.arcade.management.model;
+package com.arcade.management.factory;
 
-import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import com.arcade.management.model.Player;
+import com.arcade.management.model.Achievement;
+import com.arcade.management.model.PlayerAchievement;
+
 import java.time.LocalDateTime;
 
-@Entity @Table(name = "playerachievement") @Data @NoArgsConstructor @AllArgsConstructor
-public class PlayerAchievement {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer playerAchievementID;
-    @ManyToOne @JoinColumn(name = "playerID")
-    private Player player;
-    @ManyToOne @JoinColumn(name = "achievementID")
-    private Achievement achievement;
-    private LocalDateTime dateEarned;
-    @Override public String toString() { return "PlayerAchievement{id=" + playerAchievementID + "}"; }
-    public void setUnlockedDate(java.time.LocalDate date) { this.dateEarned = date.atStartOfDay(); }
+public class PlayerAchievementFactory {
+
+    // Step 1: Create a single static instance
+    private static PlayerAchievementFactory instance;
+
+    // Step 2: Private constructor (prevents object creation outside)
+    private PlayerAchievementFactory() {}
+
+    // Step 3: Public method to access the single instance
+    public static PlayerAchievementFactory getInstance() {
+        if (instance == null) {
+            instance = new PlayerAchievementFactory();
+        }
+        return instance;
+    }
+
+    // Step 4: Method to create PlayerAchievement
+    public PlayerAchievement createPlayerAchievement(Player player, Achievement achievement) {
+        PlayerAchievement pa = new PlayerAchievement();
+        pa.setPlayer(player);
+        pa.setAchievement(achievement);
+        pa.setDateEarned(LocalDateTime.now());
+        return pa;
+    }
 }
