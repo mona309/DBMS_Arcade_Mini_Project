@@ -7,22 +7,18 @@ import com.arcade.management.model.PlayerAchievement;
 import java.time.LocalDateTime;
 
 public class PlayerAchievementFactory {
-
-    // Step 1: Create a single static instance
+    // single static instance
     private static PlayerAchievementFactory instance;
-
-    // Step 2: Private constructor (prevents object creation outside)
+    // priv constructor
     private PlayerAchievementFactory() {}
-
-    // Step 3: Public method to access the single instance
+    // access the instances 
     public static PlayerAchievementFactory getInstance() {
         if (instance == null) {
             instance = new PlayerAchievementFactory();
         }
         return instance;
     }
-
-    // Step 4: Method to create PlayerAchievement
+    // creation
     public PlayerAchievement createPlayerAchievement(Player player, Achievement achievement) {
         PlayerAchievement pa = new PlayerAchievement();
         pa.setPlayer(player);
